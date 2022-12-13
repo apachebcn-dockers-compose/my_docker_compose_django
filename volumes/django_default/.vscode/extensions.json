@@ -1,0 +1,20 @@
+{
+  "recommendations": [
+    "ms-ceintl.vscode-language-pack-es",
+    "visualstudioexptteam.vscodeintellicode",
+    "ms-python.python",
+    "donjayamanne.python-environment-manager",
+    "donjayamanne.python-extension-pack",
+    "magicstack.magicpython",
+    "batisteo.vscode-django",
+    "ms-python.vscode-pylance",
+    "ms-python.flake8",
+    "kevinrose.vsc-python-indent",
+    "wayou.vscode-todo-highlight",
+    "rangav.vscode-thunder-client",
+    "formulahendry.auto-rename-tag",
+    "vscode-icons-team.vscode-icons",
+    "aaron-bond.better-comments",
+    "ms-azuretools.vscode-docker"
+  ]        
+}

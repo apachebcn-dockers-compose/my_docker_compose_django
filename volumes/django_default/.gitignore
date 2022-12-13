@@ -1,0 +1,9 @@
+**/migrations/
+**/**/migrations/
+*.pyc
+.git
+_pycache_
+__pycache__
+assets/media
+assets/static/*
+!assets/static/project

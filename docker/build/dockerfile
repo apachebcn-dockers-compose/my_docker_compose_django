@@ -1,0 +1,110 @@
+FROM python:3.7
+
+#####################################################
+#
+# CREADO POR PEDRO REINA ROJAS (apachebcn@gmail.com)
+#
+#####################################################
+
+#####################################################
+#
+# Para adicionar con apt-get, hacerlo en los ficheros: 
+#    - docker/build/customs_installs.sh
+#    - docker/build/requirements.txt
+#
+#####################################################
+
+
+
+ENV PROJECT_ROOT=/"srv/project"
+ENV SCRIPTS=/srv/scripts
+ENV CONFIG=/srv/config
+
+RUN apt -y update
+RUN apt -y upgrade
+RUN apt install -y mc gettext
+RUN pip3 install --upgrade pip
+
+# Crear usuario (-u 1000 para compatibilizar los permisos con la edición en el host)
+RUN adduser -u 1000 --disabled-login --group --system django
+
+USER 0
+
+RUN pip3 install psycopg2
+RUN pip3 install django-admin-honeypot
+RUN pip3 install django-bootstrap4
+RUN pip3 install django-adminlte3
+RUN pip3 install django-sb-admin
+RUN pip3 install Pillow
+RUN pip3 install django-clear-cache
+RUN pip3 install django-debug-toolbar
+RUN pip3 install django-currentuser
+RUN pip3 install natsort
+RUN pip3 install pyuca
+RUN pip3 install numpy
+RUN pip3 install captcha
+RUN pip3 install requests
+RUN pip3 install redis
+RUN pip3 install django-extensions
+RUN pip3 install django-redis
+
+# Para generar graficos de los modelos
+RUN pip3 install pydot
+RUN pip3 install pydotplus
+RUN pip3 install graphviz
+
+# Para debug en DEV
+RUN pip3 install django-ptvsd-debug
+RUN pip3 install django-werkzeug-debugger-runserver
+
+# Para interfaz jupiter
+RUN pip3 install notebook
+RUN pip3 install IPython
+
+
+RUN echo "*******************"
+RUN echo ${SCRIPTS}
+RUN echo "*******************"
+COPY ./scripts/ ${SCRIPTS}/
+RUN ls -l ${SCRIPTS}/
+RUN chmod -R +x ${SCRIPTS}/
+
+
+RUN echo "*******************"
+RUN echo ${CONFIG}
+RUN echo "*******************"
+COPY ./config/ ${CONFIG}/
+ADD ./config/django-uwsgi.ini /etc/uwsgi/django-uwsgi.ini
+RUN chmod -R +x ${CONFIG}/
+
+
+########
+# INSTALL CUSTOMS
+#
+########
+COPY customs_installs ${CONFIG}/customs_installs
+RUN if test -e customs_installs/customs_installs.sh; then chmod +x ${CONFIG}/customs_installs.sh && ${CONFIG}/customs_installs.sh; fi
+RUN if test -e customs_installs/requirements.txt; then pip3 install -r ${CONFIG}/requirements.txt; fi
+
+
+########
+# CORREGIR PERMISOS
+#
+########
+RUN chown -R django:django /usr/local/lib/python3.7
+RUN if test -d /srv/project; then chown -R django:django:django /srv/project; fi
+
+
+USER django
+
+
+WORKDIR /srv/project
+
+VOLUME ["/srv/project", "/srv/static"]
+EXPOSE 8000
+EXPOSE 8888
+EXPOSE 3000
+
+
+# Execute start script
+CMD ["/srv/scripts/start.sh"]

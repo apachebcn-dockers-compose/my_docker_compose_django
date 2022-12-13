@@ -1,0 +1,4 @@
+django==3.2.15
+uwsgi==2.0.17.1
+psycopg2-binary==2.8.5
+flake8==3.2.1
